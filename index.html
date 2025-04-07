@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Release Notes</title>
+    <style>
+        .App {
+            text-align: center;
+            font-family: Arial, sans-serif;
+        }
+        .release-notes {
+            max-width: 700px;
+            margin: 20px auto;
+            padding: 20px;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            background-color: #f9f9f9;
+        }
+        .release-note {
+            margin-bottom: 30px;
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            background-color: #fff;
+        }
+        .release-note-table {
+            width: 100%;
+            margin-bottom: 20px;
+            border-collapse: collapse;
+        }
+        .release-note-table td {
+            padding: 8px;
+            border: 1px solid #ddd;
+        }
+        .release-note-table tr:nth-child(even) {
+            background-color: #f2f2f2;
+        }
+        .release-note-table tr td:first-child {
+            width: 150px;
+            font-weight: bold;
+            text-align: right;
+        }
+        .release-note-table tr td:last-child {
+            text-align: left;
+        }
+        .feature-details ul {
+            list-style-type: disc;
+            padding-left: 20px;
+            margin: 10px 0;
+        }
+        .feature-details li {
+            margin-bottom: 10px;
+        }
+        .feature-details li strong {
+            color: #007BFF;
+        }
+        .left-align {
+            text-align: left;
+        }
+        .markdown-style {
+            background-color: #f6f8fa;
+            padding: 15px;
+            border-radius: 5px;
+            font-family: Arial, sans-serif;
+        }
+        ul {
+            list-style-type: disc;
+            padding-left: 20px;
+        }
+    </style>
+</head>
+<body>
+
+<div id="root"></div>
+
+<!-- React and ReactDOM CDN -->
+<script src="https://unpkg.com/react@17/umd/react.development.js"></script>
+<script src="https://unpkg.com/react-dom@17/umd/react-dom.development.js"></script>
+
+<!-- Babel CDN to convert JSX to JavaScript -->
+<script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+
+<script type="text/babel">
+
+function ReleaseNotes() {
+    const releaseNotesData = [
+        {
+            version: 'TBT Release Sep 2024 B- AI Summary',
+            date: 'September 25, 2024',
+            features: [
+                {
+                    featureName: 'AI Summary for TBT Video Responses',
+                    changes: [
+                        { 
+                            point: 'Description', 
+                            description: 'The AI Summary feature automatically generates a comprehensive summary of recorded videos. Using advanced natural language processing, the feature analyzes the entire video content, extracts key points, highlights, and essential information, and condenses them into a concise and coherent summary.<p>This enables users to quickly grasp the main Usability Issues and action items without watching the entire video, saving time and ensuring they stay informed about important details.</p>' 
+                        },
+                        { 
+                            point: 'Highlights', 
+                            description: `<div class="markdown-style">
+                                <ul>
+                                    <li>Consent Popup to enable AI features</li>
+                                    <li>Individual Summary in Video Player</li>
+                                    <li>Overall Summary in Report</li>
+                                    <li>Sentiment Analysis</li>
+                                    <li>Key Finding of Summary</li>
+                                    <li>Resummarize button for new response summary</li>
+                                </ul>
+                            </div>`
+                        },
+                        { 
+                            point: 'Help Documents', 
+                            description: '<a href="https://help.uxarmy.com/space/UT/127041629/AI+Summary+in+Unmoderated+Test+Reports" target="_blank"> AI Summary in Unmoderated Test Reports </a><br><a href="https://help.uxarmy.com/space/general/127139852/Managing+AI+Features" target="_blank"> General: Managing AI Features</a>' 
+                        },
+                        { 
+                            point: 'Design', 
+                            description: '<a href="https://www.figma.com/design/hH8w7FKqAKeccL2u4p6DoK/AI-Summary-feature?node-id=0-1&node-type=canvas&t=GfrJWesScLNkv2UW-0#-1" target="_blank"> Figma Link</a>' 
+                        }
+                    ]
+                }
+            ]
+        }
+    ];
+
+    return (
+        <div className="release-notes">
+            {releaseNotesData.map((note, index) => (
+                <div key={index} className="release-note">
+                    <table className="release-note-table">
+                        <tbody>
+                            <tr>
+                                <td><strong>Name:</strong></td>
+                                <td>{note.version}</td>
+                            </tr>
+                            <tr>
+                                <td><strong>Release Date:</strong></td>
+                                <td>{note.date}</td>
+                            </tr>
+                            {note.features.map((feature, fIndex) => (
+                                <tr key={fIndex}>
+                                    <td><strong>Feature:</strong></td>
+                                    <td>{feature.featureName}</td>
+                                </tr>
+                            ))}
+                        </tbody>
+                    </table>
+
+                    {note.features.map((feature, fIndex) => (
+                        <div key={fIndex} className="feature-details">
+                            <ul>
+                                {feature.changes.map((change, idx) => (
+                                    <li className="left-align" key={idx}>
+                                        <strong>{change.point}:</strong> <br/> 
+                                        <span dangerouslySetInnerHTML={{ __html: change.description }} />
+                                    </li>
+                                ))}
+                            </ul>
+                        </div>
+                    ))}
+                </div>
+            ))}
+        </div>
+    );
+}
+
+function App() {
+    return (
+        <div className="App">
+            <h1>Release Notes</h1>
+            <ReleaseNotes />
+        </div>
+    );
+}
+
+// Render the App component into the root div
+ReactDOM.render(<App />, document.getElementById('root'));
+
+</script>
+</body>
+</html>

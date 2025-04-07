@@ -1,0 +1,274 @@
+/* General styles */
+body {
+  font-family: 'Roboto', sans-serif;
+  background-color: #f8f9fa;
+  margin: 0;
+  padding: 0;
+}
+
+/* Container */
+.container {
+  max-width: 1500px;
+  height: fit-content;
+  margin: 50px auto;
+  padding: 20px;
+  background-color: #ffffff;
+  border-radius: 8px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+/* Title */
+h2 {
+  text-align: center;
+  color: #343a40;
+  margin-bottom: 20px;
+}
+
+/* Textarea styling */
+textarea.form-control {
+  font-size: 16px;
+  padding: 10px;
+  border-radius: 4px;
+  border: 1px solid #ced4da;
+  width: 100%;
+  resize: none;
+  box-sizing: border-box;
+}
+
+textarea.form-control:focus {
+  outline: none;
+  border-color: #007bff;
+  box-shadow: 0 0 5px rgba(0, 123, 255, 0.5);
+}
+
+/* Button styling */
+button.btn-primary {
+  background-color: #007bff;
+  border-color: #007bff;
+  padding: 10px 20px;
+  font-size: 16px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+.copy-btn {
+  padding: 0; /* Removes any padding from the button */
+  border: none; /* Removes border */
+  background-color: transparent; /* Makes the background transparent */
+  cursor: pointer; /* Adds a pointer cursor on hover */
+  margin-right: 10px;
+  float: right;
+
+}
+
+.copy-btn:hover {
+  color: #007bff; /* Changes color on hover, matching Bootstrap's primary color */
+}
+
+button.btn-primary:hover {
+  background-color: #0056b3;
+}
+
+button.btn-secondary {
+  background-color: #6c757d;
+  border-color: #6c757d;
+  padding: 10px 20px;
+  font-size: 16px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+button.btn-secondary:hover {
+  background-color: #5a6268;
+}
+
+/* Modal styling */
+.modal-header {
+  background-color: #007bff;
+  color: #fff;
+}
+
+.modal-title {
+  font-size: 20px;
+  font-weight: bold;
+}
+
+.modal-body {
+  padding: 20px;
+}
+
+.modal-dialog{
+  max-width: unset !important;
+}
+
+.modal-content{
+  width: 800px !important;
+  margin: auto;
+}
+
+.modal-footer button {
+  width: auto;
+}
+
+.modal-dialog-size {
+  width: 1800px;
+}
+
+.form-group input,
+.form-group textarea {
+  background-color: #f1f3f5;
+}
+
+textarea[readonly],
+input[readonly] {
+  background-color: #e9ecef;
+  border-color: #ced4da;
+}
+
+/* Margin for the button below textarea */
+button.mt-3 {
+  margin-top: 15px;
+  width: 25%;
+  align-self: center;
+}
+
+/* Button alignment in modal */
+.modal-footer {
+  display: flex;
+  justify-content: space-between;
+}
+
+.formatted-text-container {
+  padding: 10px;
+  background-color: #f8f9fa;
+  border-radius: 5px;
+  border: 1px solid #ddd;
+  width: 100%;
+  min-height: 100px;
+  overflow-y: auto;
+}
+
+.markdown-container {
+  padding: 10px;
+  background-color: #f8f9fa;
+  border-radius: 5px;
+  border: 1px solid #ddd;
+  word-wrap: break-word;
+}
+
+.markdown-container h2,
+.markdown-container h3,
+.markdown-container h4 {
+  margin-top: 10px;
+  font-weight: bold;
+}
+
+.markdown-container ul {
+  padding-left: 20px;
+  list-style-type: disc;
+}
+
+.markdown-container li {
+  margin-bottom: 5px;
+}
+
+.markdown-container strong {
+  font-weight: bold;
+}
+
+.markdown-container p {
+  margin-top: 10px;
+  margin-bottom: 10px;
+}
+
+/* Existing CSS */
+
+.formatted-text-container {
+  padding: 10px;
+  background-color: #f8f9fa;
+  border-radius: 5px;
+  border: 1px solid #ddd;
+  width: 100%;
+  min-height: 100px;
+  overflow-y: auto;
+}
+
+.markdown-container {
+  padding: 10px;
+  background-color: #f8f9fa;
+  border-radius: 5px;
+  border: 1px solid #ddd;
+}
+
+.item-box {
+  padding: 20px;
+  background-color: #007bff;
+  color: white;
+  border-radius: 10px;
+  width: 80%;
+  text-align: center;
+  cursor: pointer;
+  font-size: 1.2rem;
+  transition: background-color 0.3s ease;
+}
+
+.center-lsp {
+  color: #64e08b !important;
+  text-align: center;
+
+}
+
+.item-box:hover {
+  background-color: #0056b3;
+}
+
+.input-page {
+  width: 100%;
+}
+
+.btn-danger {
+  margin-top: 10px;
+}
+
+.btn-warning {
+  margin-left: 10px;
+}
+
+/* App.css */
+.card {
+  cursor: pointer;
+  transition: transform 0.2s ease;
+}
+
+.card:hover {
+  transform: translateY(-5px);
+}
+
+.item-list {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-around;
+}
+
+.input-page {
+  margin-top: 20px;
+}
+
+/* App.css */
+.back-btn {
+  margin-bottom: 20px;
+  color: #007bff;
+  font-size: 18px;
+}
+
+.back-btn:hover {
+  text-decoration: underline;
+  color: #0056b3;
+}
+
+.formatted-text-container {
+  background-color: #f8f9fa;
+  padding: 15px;
+  border-radius: 5px;
+  border: 1px solid #e9ecef;
+  margin-top: 20px;
+}
