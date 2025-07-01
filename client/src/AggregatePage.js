@@ -103,7 +103,7 @@ const AggregatePage = ({ onBackClick }) => {
   }, [responseText, loading]);
 
   const handleCopyToClipboard = (query, response) => {
-    const textToCopy = `Query: ${query}\nResponse: ${response}`;
+    const textToCopy = `${response}`;
     navigator.clipboard.writeText(textToCopy).then(() => {
       alert('Chat copied to clipboard!');
     }).catch(err => {

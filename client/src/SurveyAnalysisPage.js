@@ -4,7 +4,7 @@ import axios from 'axios';
 import ReactMarkdown from 'react-markdown';
 import { Clipboard } from 'react-bootstrap-icons';
 
-const NoteTakerPage = ({ onBackClick }) => {
+const SurveyAnalysisPage = ({ onBackClick }) => {
   const [inputText, setInputText] = useState('');
   const [selectedFile, setSelectedFile] = useState(null); // New state for file upload
   const [modalShow, setModalShow] = useState(false);
@@ -13,7 +13,7 @@ const NoteTakerPage = ({ onBackClick }) => {
   const [responseText, setResponseText] = useState('');
   const [previousResponse, setPreviousResponse] = useState('');
   const [displayText, setDisplayText] = useState('');
-  const typingSpeed = 2;
+  const typingSpeed = 1;
 
   const handleChange = (e) => {
     setInputText(e.target.value);
@@ -37,10 +37,10 @@ const NoteTakerPage = ({ onBackClick }) => {
         formData.append('file', selectedFile);
       }
 
-      const response = await axios.post('http://localhost:5000/noteTaker', formData, {
+      const response = await axios.post('http://localhost:5000/getSurveyAnalysis', formData, {
         headers: { 'Content-Type': 'multipart/form-data' }
       });
-
+      console.log("resonseeeeeeeeeeeeeeeeeeeeeeeeeee")
       setResponseText(response.data.responseText);
     } catch (error) {
       console.error('Error fetching response:', error);
@@ -55,18 +55,26 @@ const NoteTakerPage = ({ onBackClick }) => {
     setChatHistory((prevChatHistory) => [...prevChatHistory, newChatItem]);
     setPreviousResponse(responseText);
     setInputText('');
-    setSelectedFile(null); // Clear file input after submission
+    //setSelectedFile(null); // Clear file input after submission
     setModalShow(false);
   };
 
   const handleRegenerate = async () => {
     setLoading(true);
     try {
-      const response = await axios.post('http://localhost:5000/noteTaker', {
-        text: inputText,
-        text2: previousResponse || 'No previous response',
+      const formData = new FormData();
+      formData.append('text', inputText);
+      formData.append('text2', previousResponse || 'No previous response');
+      if (selectedFile) {
+        console.log(selectedFile)
+        formData.append('file', selectedFile);
+      }
+
+      const response = await axios.post('http://localhost:5000/getSurveyAnalysis', formData, {
+        headers: { 'Content-Type': 'multipart/form-data' }
       });
 
+      console.log("resonseeeeeeeeeeeeeeeeeeeeeeeeeee")
       setResponseText(response.data.responseText);
     } catch (error) {
       console.error('Error regenerating response:', error);
@@ -103,7 +111,7 @@ const NoteTakerPage = ({ onBackClick }) => {
   }, [responseText, loading]);
 
   const handleCopyToClipboard = (query, response) => {
-    const textToCopy = `Response: ${response}`;
+    const textToCopy = `${response}`;
     navigator.clipboard.writeText(textToCopy).then(() => {
       alert('Chat copied to clipboard!');
     }).catch(err => {
@@ -117,7 +125,8 @@ const NoteTakerPage = ({ onBackClick }) => {
         &larr; Back
       </Button>
 
-      <h2>Ansh - AI Note Taker</h2>
+      <h2>Survey Analysis</h2>
+      <h4> Get Insights of your survey responses.</h4>
 
       {/* Chat History Section */}
       <div className="chat-history mb-4">
@@ -149,11 +158,11 @@ const NoteTakerPage = ({ onBackClick }) => {
         <textarea
           value={inputText}
           onChange={handleChange}
-          placeholder="Enter your query with dataset..."
+          placeholder="Ask your question for survey response..."
           className="form-control"
           rows="5"
         />
-        
+
         {/* File Upload Input */}
         <input type="file" onChange={handleFileChange} className="mt-3" />
         {selectedFile && <p className="text-muted mt-2">Selected File: {selectedFile.name}</p>}
@@ -169,7 +178,7 @@ const NoteTakerPage = ({ onBackClick }) => {
       {/* Modal for showing the response */}
       <Modal show={modalShow} onHide={handleModalClose}>
         <Modal.Header closeButton>
-          <Modal.Title>Support Response</Modal.Title>
+          <Modal.Title>Ask Respora</Modal.Title>
         </Modal.Header>
         <Modal.Body style={{ overflow: 'auto', maxHeight: '600px' }}>
           <div className="form-group">
@@ -203,4 +212,4 @@ const NoteTakerPage = ({ onBackClick }) => {
   );
 };
 
-export default NoteTakerPage;
+export default SurveyAnalysisPage;

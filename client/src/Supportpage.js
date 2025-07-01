@@ -98,7 +98,7 @@ const SupportPage = ({ onBackClick }) => {
 
   // Function to copy query and response to clipboard
   const handleCopyToClipboard = (query, response) => {
-    const textToCopy = `Query: ${query}\nResponse: ${response}`;
+    const textToCopy = ` ${response}`;
     navigator.clipboard.writeText(textToCopy).then(() => {
       alert('Chat copied to clipboard!');
     }).catch(err => {

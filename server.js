@@ -3,6 +3,10 @@ const multer = require('multer');
 const axios = require('axios');
 const fs = require('fs').promises; // 
 const cors = require('cors');
+require('dotenv').config();
+const askSurveyRoutes = require('./Apis/asksurvey');
+const getOpenQuestionAnalysis = require('./Apis/getOpenQuestionAnalysis')
+const getSurveyAnalysis = require('./Apis/getSurveyAnalysis')
 
 // Initialize Express app
 const app = express();
@@ -11,9 +15,11 @@ app.use(cors());
 
 // Middleware to parse incoming JSON requests
 app.use(express.json());
-
+app.use('/askSurvey', askSurveyRoutes);
+app.use('/getOpenQuestionAnalysis', getOpenQuestionAnalysis);
+app.use('/getSurveyAnalysis', getSurveyAnalysis);
 // Your Google Gemini API Key
-const GOOGLE_GEMINI_API_KEY = ''; // Replace with your actual Google Gemini API key
+const GOOGLE_GEMINI_API_KEY = process.env.GOOGLE_GEMINI_API_KEY; // Replace with your actual Google Gemini API key
 
 // Function to call the Google Gemini API for rewriting text
 const rewriteTextWithGemini = async (text) => {
@@ -342,6 +348,97 @@ app.post('/noteTaker', upload.single('file'), async (req, res) => {
 
     // Call Gemini API with text, previous response, and file content
     const responseText = await noteTakerPrompt(text, text2, fileContent);
+
+    // Respond with the generated text
+    res.status(200).json({ responseText });
+  } catch (error) {
+    res.status(500).json({ message: 'Internal Server Error' });
+  } finally {
+    // Clean up uploaded file after processing
+    if (req.file) {
+      await fs.unlink(req.file.path);
+    }
+  }
+});
+
+
+const analyzeReportPrompt = async (text, previousResponse, fileContent) => {
+  try {
+    // Construct the query with optional file content
+    let promptText = `
+    The JSON is a Usability research result of a Task where multiple participant gave there responses. 
+    You have analyze the task and give the 
+    Detailed summary, 
+    Observations, 
+    Data insights,  
+    Page Navigation Flow (show only if available), 
+    Quantitative Insights, 
+    Qualitative Interpretation, 
+    Tester issues, 
+    Actionable insights and 
+    Implication.
+    
+    Note to consider while giving output - 
+        1) Task description tells us the task detail
+        2) "testerResponse" object contain the participant responses and Number of participant
+        3) when type is not equal to 5 then "result key" is the participant result of that task
+        4) When type=5 then check the "questionType" value then accordingly give your output
+        5) When type=5 then the participant answer inside "question.answers" object is the factor that define the result
+        6) If transcription key value is present then consider that as these are words spoken by the participant during that task
+        7) Page Naviagtion flow give detail about all the pages in Figma/website user click using "pageDetail" array
+
+    Input Task JSON - ${text}
+    
+    Point to be Remembered before output generation - 
+    a) Please consider all the object of testerResponse array
+    b) Please show more data in terms of numeric values if available
+    c) Result key value meaning = {NULL: 0,
+      FAIL: 3, //if both successurl and answer dont match
+      SUCCESS: 1, //if both successurl and answer match
+      UNCLASSIFIED: 2, //if any one of successurl and answer dont match
+      DIRECT_SUCCESS: 4,
+      INDIRECT_SUCCESS: 5,
+    };
+    d) Don't mention things like "Two images were also displayed, though their content is unknown". "if Page Navigation Flow is not available" in output"  
+    e) Show Quantitative Insights in bullet format not in table
+    f) Don't mention about JSON in output
+    g) Dont show result code in output like "coded as 3" & (calculated from the "interactions" value in the events object). `;
+
+    const response = await axios.post(
+      `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash-latest:generateContent?key=${GOOGLE_GEMINI_API_KEY}`,
+      {
+        contents: [
+          {
+            parts: [{ text: promptText }],
+          },
+        ],
+      },
+      {
+        headers: { 'Content-Type': 'application/json' },
+      }
+    );
+
+    //  console.log(response.data.candidates[0].content);
+    return response.data.candidates[0].content.parts[0].text;
+  } catch (error) {
+    console.error('Error with Google Gemini API:', error.response ? error.response.data : error.message);
+    throw new Error('Failed to generate response');
+  }
+};
+
+
+app.post('/report/analyzer', upload.single('file'), async (req, res) => {
+  const { text, text2 } = req.body;
+  let fileContent = '';
+
+  try {
+    if (req.file) {
+      // Read file content (assumes text-based file)
+      fileContent = await fs.readFile(req.file.path, 'utf-8');
+    }
+
+    // Call Gemini API with text, previous response, and file content
+    const responseText = await analyzeReportPrompt(text, text2, fileContent);
 
     // Respond with the generated text
     res.status(200).json({ responseText });

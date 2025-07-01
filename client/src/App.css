@@ -18,7 +18,7 @@ body {
 }
 
 /* Title */
-h2 {
+h2,h4 {
   text-align: center;
   color: #343a40;
   margin-bottom: 20px;

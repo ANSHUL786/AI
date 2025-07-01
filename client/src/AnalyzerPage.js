@@ -4,7 +4,7 @@ import axios from 'axios';
 import ReactMarkdown from 'react-markdown';
 import { Clipboard } from 'react-bootstrap-icons';
 
-const NoteTakerPage = ({ onBackClick }) => {
+const AnalyzerPage = ({ onBackClick }) => {
   const [inputText, setInputText] = useState('');
   const [selectedFile, setSelectedFile] = useState(null); // New state for file upload
   const [modalShow, setModalShow] = useState(false);
@@ -13,16 +13,16 @@ const NoteTakerPage = ({ onBackClick }) => {
   const [responseText, setResponseText] = useState('');
   const [previousResponse, setPreviousResponse] = useState('');
   const [displayText, setDisplayText] = useState('');
-  const typingSpeed = 2;
+  const typingSpeed = 1;
 
   const handleChange = (e) => {
     setInputText(e.target.value);
   };
 
   // Handle file selection
-  const handleFileChange = (e) => {
-    setSelectedFile(e.target.files[0]);
-  };
+  // const handleFileChange = (e) => {
+  //   setSelectedFile(e.target.files[0]);
+  // };
 
   const handleModalShow = async () => {
     if (!inputText.trim() && !selectedFile) return;
@@ -37,7 +37,7 @@ const NoteTakerPage = ({ onBackClick }) => {
         formData.append('file', selectedFile);
       }
 
-      const response = await axios.post('http://localhost:5000/noteTaker', formData, {
+      const response = await axios.post('http://localhost:5000/report/analyzer', formData, {
         headers: { 'Content-Type': 'multipart/form-data' }
       });
 
@@ -62,7 +62,7 @@ const NoteTakerPage = ({ onBackClick }) => {
   const handleRegenerate = async () => {
     setLoading(true);
     try {
-      const response = await axios.post('http://localhost:5000/noteTaker', {
+      const response = await axios.post('http://localhost:5000/report/analyzer', {
         text: inputText,
         text2: previousResponse || 'No previous response',
       });
@@ -102,13 +102,37 @@ const NoteTakerPage = ({ onBackClick }) => {
     }
   }, [responseText, loading]);
 
-  const handleCopyToClipboard = (query, response) => {
-    const textToCopy = `Response: ${response}`;
+  const handleCopyToClipboard2 = (query, response) => {
+    const textToCopy = `Query: ${query}\nResponse: ${response}`;
     navigator.clipboard.writeText(textToCopy).then(() => {
       alert('Chat copied to clipboard!');
     }).catch(err => {
       console.error('Failed to copy text: ', err);
     });
+  };
+
+  const handleCopyToClipboard = (query, response) => {
+    const stripMarkdown = (text) => {
+      return text
+        .replace(/!\[.*?\]\(.*?\)/g, '') // remove images ![alt](url)
+        .replace(/\[([^\]]+)\]\((.*?)\)/g, '$1') // replace links [text](url) with 'text'
+        .replace(/`{1,3}([^`]*)`{1,3}/g, '$1') // remove inline code/backticks
+        .replace(/[*_~#>`-]/g, '') // remove common markdown characters
+        .replace(/^\s*[\d]+\.\s+/gm, '') // remove numbered list formatting
+        .replace(/^\s*[-+*]\s+/gm, ''); // remove bullet list formatting
+    };
+
+    const cleanResponse = stripMarkdown(response);
+
+    const textToCopy = `${cleanResponse}`;
+
+    navigator.clipboard.writeText(textToCopy)
+      .then(() => {
+        alert('Chat copied to clipboard!');
+      })
+      .catch(err => {
+        console.error('Failed to copy text: ', err);
+      });
   };
 
   return (
@@ -117,7 +141,7 @@ const NoteTakerPage = ({ onBackClick }) => {
         &larr; Back
       </Button>
 
-      <h2>Ansh - AI Note Taker</h2>
+      <h2>Ansh - Analyzer</h2>
 
       {/* Chat History Section */}
       <div className="chat-history mb-4">
@@ -149,14 +173,14 @@ const NoteTakerPage = ({ onBackClick }) => {
         <textarea
           value={inputText}
           onChange={handleChange}
-          placeholder="Enter your query with dataset..."
+          placeholder="Enter Task JSON..."
           className="form-control"
           rows="5"
         />
-        
-        {/* File Upload Input */}
+
+        {/* File Upload Input
         <input type="file" onChange={handleFileChange} className="mt-3" />
-        {selectedFile && <p className="text-muted mt-2">Selected File: {selectedFile.name}</p>}
+        {selectedFile && <p className="text-muted mt-2">Selected File: {selectedFile.name}</p>} */}
 
         <Button variant="primary" onClick={handleModalShow} className="mt-3">
           <i className="fas fa-edit"></i> Submit Query
@@ -169,9 +193,9 @@ const NoteTakerPage = ({ onBackClick }) => {
       {/* Modal for showing the response */}
       <Modal show={modalShow} onHide={handleModalClose}>
         <Modal.Header closeButton>
-          <Modal.Title>Support Response</Modal.Title>
+          <Modal.Title>Analyzer</Modal.Title>
         </Modal.Header>
-        <Modal.Body style={{ overflow: 'auto', maxHeight: '600px' }}>
+        <Modal.Body style={{ overflow: 'auto', maxHeight: '600px',minHeight:'400px' }}>
           <div className="form-group">
             <label>Your Query:</label>
             <textarea value={inputText} readOnly className="form-control" rows="3" />
@@ -203,4 +227,4 @@ const NoteTakerPage = ({ onBackClick }) => {
   );
 };
 
-export default NoteTakerPage;
+export default AnalyzerPage;
